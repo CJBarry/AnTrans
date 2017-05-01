@@ -1,7 +1,10 @@
 # Domenico 1987
 
-#' Domenico solution
+#' @rdname Domenico
 #'
+#' @title Domenico solution
+#'
+#' @description
 #' The Domenico 1987 analytical solution to contaminant transport in
 #'  uniform groundwater flow, including longitudinal and transverse
 #'  dispersion and first-order degradation.
@@ -20,6 +23,12 @@
 #' @return
 #' Numeric result, of same form as x, y or z.  x, y and z may be recycled.
 #'
+#' @details
+#' \code{const_Dom} returns the solution from a constant source which
+#'  starts at time 0.  \code{square_Dom} returns the solution from a finite
+#'  duration constant source that starts at time 0 and stops after
+#'  \code{dur}.
+#'
 #' @note
 #' Some special cases may be achieved with certain parameter sets.
 #'
@@ -27,7 +36,7 @@
 #'  results.\cr
 #' If ax = 0 (no longitudinal dispersion), the Domenico-Palciauskas (1982)
 #'  solution results.\cr
-#' If ay = az = 0 (no transverse dispersion), the Bear 1979 solution
+#' If ay = az = 0 (no transverse dispersion), the Bear (1979) solution
 #'  results.\cr
 #' If ay = az = 0 and lambda = 0, the Ogata-Banks (1961) solution
 #'  results.\cr
@@ -51,4 +60,18 @@ const_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ){
     })*
     (erf((y + sY/2)/(2*(ay*x)^.5)) - erf((y - sY/2)/(2*(ay*x)^.5)))*
     (erf((z + sZ/2)/(2*(az*x)^.5)) - erf((z - sZ/2)/(2*(az*x)^.5)))
+}
+
+#' @rdname Domenico
+#'
+#' @param dur duration of pulse
+#'
+#' @export
+#'
+square_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ,
+                       dur){
+  ifelse(t < dur,
+         const_Dom(C0, x, u, z, t, vx, ax, ay, az, lambda, sY, sZ),
+         const_Dom(C0, x, u, z, t, vx, ax, ay, az, lambda, sY, sZ) -
+           const_Dom(C0, x, u, z, t - dur, vx, ax, ay, az, lambda, sY, sZ))
 }

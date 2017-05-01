@@ -2,9 +2,12 @@
 % Please edit documentation in R/Domenico.R
 \name{const_Dom}
 \alias{const_Dom}
+\alias{square_Dom}
 \title{Domenico solution}
 \usage{
 const_Dom(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ)
+
+square_Dom(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ, dur)
 }
 \arguments{
 \item{C0}{source concentration}
@@ -23,6 +26,8 @@ directions}
 \item{lambda}{first-order decay constant}
 
 \item{sY, sZ}{source dimensions in y and z directions}
+
+\item{dur}{duration of pulse}
 }
 \value{
 Numeric result, of same form as x, y or z.  x, y and z may be recycled.
@@ -32,6 +37,12 @@ The Domenico 1987 analytical solution to contaminant transport in
  uniform groundwater flow, including longitudinal and transverse
  dispersion and first-order degradation.
 }
+\details{
+\code{const_Dom} returns the solution from a constant source which
+ starts at time 0.  \code{square_Dom} returns the solution from a finite
+ duration constant source that starts at time 0 and stops after
+ \code{dur}.
+}
 \note{
 Some special cases may be achieved with certain parameter sets.
 
@@ -39,7 +50,7 @@ If lambda = 0 (no degradation), the Domenico-Robbins (1985) solution
  results.\cr
 If ax = 0 (no longitudinal dispersion), the Domenico-Palciauskas (1982)
  solution results.\cr
-If ay = az = 0 (no transverse dispersion), the Bear 1979 solution
+If ay = az = 0 (no transverse dispersion), the Bear (1979) solution
  results.\cr
 If ay = az = 0 and lambda = 0, the Ogata-Banks (1961) solution
  results.\cr
