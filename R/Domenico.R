@@ -42,7 +42,7 @@
 #'  results.\cr
 #'
 #' @references
-#' Domenico, P. A. (1987). An analytical model for multidimensional transport of a decaying contaminant species. Journal of Hydrology, 91(1), 49–58. https://doi.org/10.1016/0022-1694(87)90127-2
+#' Domenico, P. A. (1987). An analytical model for multidimensional transport of a decaying contaminant species. Journal of Hydrology, 91(1), 49-58. https://doi.org/10.1016/0022-1694(87)90127-2
 #'
 #' @importFrom pracma erf
 #' @importFrom pracma erfc
@@ -50,7 +50,8 @@
 #'
 const_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ){
   # recycle ax so that the comparisons are fully vectorised
-  tmp <- double(length(x))
+  N <- max(length(x), length(vx), length(t))
+  tmp <- double(N)
   tmp[] <- ax; ax <- tmp; rm(tmp)
 
   (C0/8)*
@@ -70,8 +71,12 @@ const_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ){
 #'
 square_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ,
                        dur){
+  # recycle t so that the comparisons are fully vectorised
+  tmp <- double(length(x))
+  tmp[] <- t; t <- tmp; rm(tmp)
+
   ifelse(t < dur,
-         const_Dom(C0, x, u, z, t, vx, ax, ay, az, lambda, sY, sZ),
-         const_Dom(C0, x, u, z, t, vx, ax, ay, az, lambda, sY, sZ) -
-           const_Dom(C0, x, u, z, t - dur, vx, ax, ay, az, lambda, sY, sZ))
+         const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ),
+         const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ) -
+           const_Dom(C0, x, y, z, t - dur, vx, ax, ay, az, lambda, sY, sZ))
 }
