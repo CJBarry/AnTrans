@@ -1,0 +1,14 @@
+Package: AnTrans
+Type: Package
+Title: Analytical Solutions for Contaminant Transport in Groundwater
+Version: 0.1.0
+Author: Christopher Barry
+Maintainer: Christopher Barry <cjbarry.hydrogeo@gmail.com>
+Description: Domenico 1987 equation
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.0.0)
+Imports: pracma
+Suggests: testthat
+RoxygenNote: 6.0.1
