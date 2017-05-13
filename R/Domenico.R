@@ -48,16 +48,20 @@
 #' @importFrom pracma erfc
 #' @export
 #'
-const_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ){
+const_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ,
+                      Rf = 1, decaysorbed = FALSE){
   # recycle ax so that the comparisons are fully vectorised
   N <- max(length(x), length(vx), length(t))
   tmp <- double(N)
   tmp[] <- ax; ax <- tmp; rm(tmp)
 
   (C0/8)*
-    ifelse(ax == 0, ifelse(x < vx*t, 2, 0), {
-      exp((x/(2*ax))*(1 - (1 + (4*lambda*ax)/vx)^.5))*
-        erfc((x - vx*t*(1 + (4*lambda*ax)/vx)^.5)/(2*(ax*vx*t)^.5))
+    ifelse(ax == 0, ifelse(x < vx/Rf*t, 2, 0), {
+      exp((x/(2*ax))*(1 - (1 + (4*lambda*ax)/
+                             (if(decaysorbed) vx/Rf else vx))^.5))*
+        erfc((x - vx/Rf*t*(1 + (4*lambda*ax)/
+                             (if(decaysorbed) vx/Rf else vx))^.5)/
+               (2*(ax*vx/Rf*t)^.5))
     })*
     (erf((y + sY/2)/(2*(ay*x)^.5)) - erf((y - sY/2)/(2*(ay*x)^.5)))*
     (erf((z + sZ/2)/(2*(az*x)^.5)) - erf((z - sZ/2)/(2*(az*x)^.5)))
@@ -70,13 +74,16 @@ const_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ){
 #' @export
 #'
 square_Dom <- function(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ,
-                       dur){
+                       dur, Rf = 1, decaysorbed = FALSE){
   # recycle t so that the comparisons are fully vectorised
   tmp <- double(length(x))
   tmp[] <- t; t <- tmp; rm(tmp)
 
   ifelse(t < dur,
-         const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ),
-         const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ) -
-           const_Dom(C0, x, y, z, t - dur, vx, ax, ay, az, lambda, sY, sZ))
+         const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda,
+                   sY, sZ, Rf, decaysorbed),
+         const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda,
+                   sY, sZ, Rf, decaysorbed) -
+           const_Dom(C0, x, y, z, t - dur, vx, ax, ay, az, lambda,
+                     sY, sZ, Rf, decaysorbed))
 }

@@ -5,7 +5,8 @@
 \alias{square_Dom}
 \title{Domenico solution}
 \usage{
-const_Dom(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ)
+const_Dom(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ, Rf = 1,
+  decaysorbed = TRUE)
 
 square_Dom(C0 = 1, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ, dur)
 }
@@ -56,5 +57,6 @@ If ay = az = 0 and lambda = 0, the Ogata-Banks (1961) solution
  results.\cr
 }
 \references{
-Domenico, P. A. (1987). An analytical model for multidimensional transport of a decaying contaminant species. Journal of Hydrology, 91(1), 49–58. https://doi.org/10.1016/0022-1694(87)90127-2
+Domenico, P. A. (1987). An analytical model for multidimensional transport of a decaying contaminant species. Journal of Hydrology, 91(1), 49-58. https://doi.org/10.1016/0022-1694(87)90127-2
 }
+

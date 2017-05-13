@@ -3,8 +3,10 @@ library(AnTrans)
 
 # wrapper with convenient defaults
 cD_def <- function(C0 = 1, x = 0, y = 0, z = 0, t = 1, vx = 1,
-                   ax = 1, ay = 1, az = 1, lambda = 0, sY = 1, sZ = 1){
-  const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ)
+                   ax = 1, ay = 1, az = 1, lambda = 0, sY = 1, sZ = 1,
+                   Rf = 1, decaysorbed = FALSE){
+  const_Dom(C0, x, y, z, t, vx, ax, ay, az, lambda, sY, sZ,
+            Rf, decaysorbed)
 }
 
 test_that("Known values", {
@@ -35,6 +37,20 @@ test_that("Known values", {
   # degradation reduces concentration
   expect_lt(cD_def(x = 5, y = 3, z = 2, t = 10, lambda = .1),
             cD_def(x = 5, y = 3, z = 2, t = 10, lambda = 0))
+
+  # retardation with plug flow
+  expect_equal(cD_def(t = 1, vx = 1, ax = 0, ay = 0, az = 0,
+                      x = c(.9, 1.1)/2, Rf = 2), c(1, 0))
+  #
+  # - decay and decaysorbed
+  expect_lt(cD_def(t = 1, vx = 1, ax = .1, ay = 0, az = 0, lambda = .1,
+                   x = .9/2, Rf = 2, decaysorbed = FALSE),
+            cD_def(t = 1, vx = 1, ax = .1, ay = 0, az = 0, lambda = 0,
+                   x = .9/2, Rf = 2, decaysorbed = FALSE))
+  expect_gt(cD_def(t = 1, vx = 1, ax = .1, ay = 0, az = 0, lambda = .1,
+                   x = .9/2, Rf = 2, decaysorbed = FALSE),
+            cD_def(t = 1, vx = 1, ax = .1, ay = 0, az = 0, lambda = .1,
+                   x = .9/2, Rf = 2, decaysorbed = TRUE))
 
   # special case equivalence to O-B
   t <- sample(1:50, 1L)
